@@ -2,4 +2,6 @@
     <string name="app_name">MedicalRecordTrackingSystem</string>
     <string name="select_hospital">Select Hospital</string>
     <string name="ok_button">OK</string>
+    <string name="api_error_message">Unable to load</string>
+    <string name="select_doctor">Select Doctor</string>
 </resources>
