@@ -1,10 +1,19 @@
 package sample.com.medicalrecordtrackingsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,24 +24,44 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sample.com.medicalrecordtrackingsystem.models.Doctor;
+import sample.com.medicalrecordtrackingsystem.adapter.DrawerAdapter;
+import sample.com.medicalrecordtrackingsystem.models.Department;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
 import sample.com.medicalrecordtrackingsystem.rest.ApiClient;
 import sample.com.medicalrecordtrackingsystem.rest.ApiInterface;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String DUMMY_ID = "-1";
+    private String navigationTitles[] = {"Book Appointment", "Appointments", "logout"};
+    String headerName = "Ayush Khare";
+
     @Bind(R.id.hospital_spinner)
     SearchableSpinner hospitalSpinner;
-    @Bind(R.id.doctor_spinner)
-    SearchableSpinner doctorSpinner;
-    @Bind(R.id.doctor_text_view)
-    TextView doctorTextView;
+    @Bind(R.id.department_spinner)
+    SearchableSpinner departmentSpinner;
+    @Bind(R.id.deparment_text_view)
+    TextView departmentTextView;
+    @Bind(R.id.proceed_btn)
+    Button proceedButton;
+    @Bind(R.id.drawer_recycler_view)
+    RecyclerView recyclerView;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @Bind(R.id.my_toolbar)
+    Toolbar toolbar;
 
     private ApiInterface apiService;
+    private String selectedHospitalid;
+    private String selectedDepartmentValue;
+    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
+    RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
+    DrawerLayout Drawer;                                  // Declaring DrawerLayout
+    ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +69,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getApiClient();
+        setupDrawer();
         getHospitalsFromApi();
-//        getDoctorsFromApi();
+        getDepartmentsFromApi();
+        setButtonState();
     }
 
     private void getApiClient() {
         apiService = ApiClient.getCient().create(ApiInterface.class);
+    }
+
+    private void setupDrawer() {
+        setSupportActionBar(toolbar);
+        recyclerView.setHasFixedSize(true);
+        mAdapter = new DrawerAdapter(navigationTitles, headerName);
+        recyclerView.setAdapter(mAdapter);
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        drawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
     /**
@@ -59,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 if (response != null) {
                     if (response.isSuccessful() && response.body() != null) {
                         List<Hospital> hospitalList = response.body();
+                        Hospital dummyHospital = new Hospital();
+                        dummyHospital.setName(getString(R.string.select_one));
+                        dummyHospital.setId(DUMMY_ID);
+                        hospitalList.add(0, dummyHospital);
                         populateHospitalList(hospitalList);
                     }
                 }
@@ -82,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         for (Hospital hospital : hospitalList) {
             hospitalNames.add(hospital.getName());
         }
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, hospitalNames);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, hospitalNames);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hospitalSpinner.setAdapter(spinnerAdapter);
         hospitalSpinner.setTitle(getString(R.string.select_hospital));
@@ -91,82 +150,101 @@ public class MainActivity extends AppCompatActivity {
         hospitalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String id = hospitalList.get(position).getId();
-                getDoctorBasedOnHospital(id);
+                selectedHospitalid = hospitalList.get(position).getId();
+                setButtonState();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                
+
             }
         });
     }
 
     /**
-     * Function to get doctor based on hospital selected from spinner
-     * @param id
+     * Function to get all the departments
      */
-    private void getDoctorBasedOnHospital(String id) {
-        Call<List<Doctor>> call = apiService.getDoctorBasedOnHospital(id);
-        call.enqueue(new Callback<List<Doctor>>() {
+    private void getDepartmentsFromApi() {
+        Call<List<Department>> call = apiService.getDepartments();
+        call.enqueue(new Callback<List<Department>>() {
             @Override
-            public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
+            public void onResponse(Call<List<Department>> call, Response<List<Department>> response) {
                 if (response != null) {
                     if (response.isSuccessful() && response.body() != null) {
-                        List<Doctor> doctorList = response.body();
-                        populateDoctorList(doctorList);
+                        List<Department> departmentList = response.body();
+                        Department dummyDepartment = new Department();
+                        dummyDepartment.setValue(getString(R.string.select_one));
+                        departmentList.add(0, dummyDepartment);
+                        populateDepartmentList(departmentList);
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Doctor>> call, Throwable t) {
+            public void onFailure(Call<List<Department>> call, Throwable t) {
 
             }
         });
     }
 
     /**
-     * Function to get all the doctors
+     * Function to populate department list into spinner
+     * @param departmentList
      */
-    private void getDoctorsFromApi() {
-        Call<List<Doctor>> call = apiService.getDoctors();
-        call.enqueue(new Callback<List<Doctor>>() {
-            @Override
-            public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
-                if (response != null) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        List<Doctor> doctorList = response.body();
-                        populateDoctorList(doctorList);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Doctor>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
-            }
-        });
-    }
-
-    /**
-     * Function to populate doctor list into spinner based on hospital
-     * @param doctorList
-     */
-
-    private void populateDoctorList(List<Doctor> doctorList) {
-        doctorTextView.setVisibility(View.VISIBLE);
-        doctorSpinner.setVisibility(View.VISIBLE);
-        List<String> doctorNames = new ArrayList<>();
-        for (Doctor doctor : doctorList) {
-            doctorNames.add(doctor.getName());
+    private void populateDepartmentList(final List<Department> departmentList) {
+        List<String> departmentNames = new ArrayList<>();
+        for (Department department : departmentList) {
+            departmentNames.add(department.getValue());
         }
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, doctorNames);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, departmentNames);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        doctorSpinner.setAdapter(spinnerAdapter);
-        doctorSpinner.setTitle(getString(R.string.select_doctor));
-        doctorSpinner.setPositiveButton(getString(R.string.ok_button));
+        departmentSpinner.setAdapter(spinnerAdapter);
+        departmentSpinner.setTitle(getString(R.string.select_department));
+        departmentSpinner.setPrompt(getString(R.string.select_department));
+        departmentSpinner.setPositiveButton(getString(R.string.ok_button));
+
+        departmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedDepartmentValue = departmentList.get(position).getValue();
+                setButtonState();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void setButtonState() {
+        if (DUMMY_ID.equals(selectedHospitalid) && getString(R.string.select_one).equals(selectedDepartmentValue)) {
+            proceedButton.setEnabled(false);
+        } else {
+            proceedButton.setEnabled(true);
+        }
+    }
+
+    @OnClick(R.id.proceed_btn)
+    public void onClickProceed() {
+        Intent intent = new Intent(MainActivity.this, DoctorDetailsActivity.class);
+        intent.putExtra("hospital_id", selectedHospitalid);
+        intent.putExtra("department_value", selectedDepartmentValue);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
