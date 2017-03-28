@@ -1,5 +1,7 @@
 package sample.com.medicalrecordtrackingsystem.rest;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
@@ -9,7 +11,7 @@ import sample.com.medicalrecordtrackingsystem.models.Hospital;
  */
 public interface ApiInterface {
 
-    @GET("professionals/discovery")
-    Call<Hospital> getHospitals();
+    @GET("hospitals")
+    Call<List<Hospital>> getHospitals();
 
 }
