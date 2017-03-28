@@ -2,7 +2,10 @@ package sample.com.medicalrecordtrackingsystem;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     SearchableSpinner hospitalSpinner;
     @Bind(R.id.doctor_spinner)
     SearchableSpinner doctorSpinner;
+    @Bind(R.id.doctor_text_view)
+    TextView doctorTextView;
 
     private ApiInterface apiService;
 
@@ -36,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getApiClient();
         getHospitalsFromApi();
-        getDoctorsFromApi();
+//        getDoctorsFromApi();
     }
 
     private void getApiClient() {
@@ -69,9 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Function to populate hospital list into spinner
+     *
      * @param hospitalList
      */
-    private void populateHospitalList(List<Hospital> hospitalList) {
+    private void populateHospitalList(final List<Hospital> hospitalList) {
         List<String> hospitalNames = new ArrayList<>();
         for (Hospital hospital : hospitalList) {
             hospitalNames.add(hospital.getName());
@@ -81,6 +87,43 @@ public class MainActivity extends AppCompatActivity {
         hospitalSpinner.setAdapter(spinnerAdapter);
         hospitalSpinner.setTitle(getString(R.string.select_hospital));
         hospitalSpinner.setPositiveButton(getString(R.string.ok_button));
+
+        hospitalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                String id = hospitalList.get(position).getId();
+                getDoctorBasedOnHospital(id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                
+            }
+        });
+    }
+
+    /**
+     * Function to get doctor based on hospital selected from spinner
+     * @param id
+     */
+    private void getDoctorBasedOnHospital(String id) {
+        Call<List<Doctor>> call = apiService.getDoctorBasedOnHospital(id);
+        call.enqueue(new Callback<List<Doctor>>() {
+            @Override
+            public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
+                if (response != null) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<Doctor> doctorList = response.body();
+                        populateDoctorList(doctorList);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Doctor>> call, Throwable t) {
+
+            }
+        });
     }
 
     /**
@@ -107,7 +150,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Function to populate doctor list into spinner based on hospital
+     * @param doctorList
+     */
+
     private void populateDoctorList(List<Doctor> doctorList) {
+        doctorTextView.setVisibility(View.VISIBLE);
+        doctorSpinner.setVisibility(View.VISIBLE);
         List<String> doctorNames = new ArrayList<>();
         for (Doctor doctor : doctorList) {
             doctorNames.add(doctor.getName());

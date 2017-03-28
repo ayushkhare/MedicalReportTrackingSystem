@@ -4,6 +4,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import sample.com.medicalrecordtrackingsystem.models.Doctor;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
 
@@ -18,4 +19,6 @@ public interface ApiInterface {
     @GET("doctors")
     Call<List<Doctor>> getDoctors();
 
+    @GET("doctors")
+    Call<List<Doctor>> getDoctorBasedOnHospital(@Query("hospitalId") String hospitalId);
 }
