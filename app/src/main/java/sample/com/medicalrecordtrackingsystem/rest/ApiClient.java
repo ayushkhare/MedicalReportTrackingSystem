@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ApiClient {
 
-    public static final String BASE_URl = "https://www.example.com/";
+    public static final String BASE_URl = "http://medrecordhelp.herokuapp.com/webapi/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getCient() {
