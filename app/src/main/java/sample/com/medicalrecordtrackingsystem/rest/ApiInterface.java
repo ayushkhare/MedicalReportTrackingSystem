@@ -4,6 +4,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import sample.com.medicalrecordtrackingsystem.models.Doctor;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
 
 /**
@@ -13,5 +14,8 @@ public interface ApiInterface {
 
     @GET("hospitals")
     Call<List<Hospital>> getHospitals();
+
+    @GET("doctors")
+    Call<List<Doctor>> getDoctors();
 
 }
