@@ -11,4 +11,13 @@
     <string name="select_one">--Select one--</string>
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="get_started">Get Started</string>
+    <string name="login">Login</string>
+    <string name="cannot_sign_in_user">Unable to Sign in</string>
+    <string name="shared_pref_key">SharedPreference User</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="user_id">User id</string>
 </resources>

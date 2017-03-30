@@ -31,6 +31,7 @@ import retrofit2.Response;
 import sample.com.medicalrecordtrackingsystem.adapter.DrawerAdapter;
 import sample.com.medicalrecordtrackingsystem.models.Department;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
+import sample.com.medicalrecordtrackingsystem.models.User;
 import sample.com.medicalrecordtrackingsystem.rest.ApiClient;
 import sample.com.medicalrecordtrackingsystem.rest.ApiInterface;
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String DUMMY_ID = "-1";
     private String navigationTitles[] = {"Book Appointment", "Appointments", "logout"};
-    String headerName = "Ayush Khare";
+    String headerName = "";
 
     @Bind(R.id.hospital_spinner)
     SearchableSpinner hospitalSpinner;
@@ -68,15 +69,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Bundle bundle = getIntent().getExtras();
+        int userId = bundle.getInt("userId");
         getApiClient();
-        setupDrawer();
+        getUserDetails(userId);
         getHospitalsFromApi();
         getDepartmentsFromApi();
-        setButtonState();
+        proceedButton.setEnabled(false);
     }
 
     private void getApiClient() {
         apiService = ApiClient.getCient().create(ApiInterface.class);
+    }
+
+    private void getUserDetails(int userId) {
+        Call<User> call= apiService.getUserDetails(userId);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response != null) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        User user = response.body();
+                        headerName = user.getUsername();
+                        setupDrawer();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupDrawer() {
