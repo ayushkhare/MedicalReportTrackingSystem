@@ -1,6 +1,8 @@
 package sample.com.medicalrecordtrackingsystem;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,11 +36,12 @@ import sample.com.medicalrecordtrackingsystem.models.Hospital;
 import sample.com.medicalrecordtrackingsystem.models.User;
 import sample.com.medicalrecordtrackingsystem.rest.ApiClient;
 import sample.com.medicalrecordtrackingsystem.rest.ApiInterface;
+import sample.com.medicalrecordtrackingsystem.utility.ItemClickSupport;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String DUMMY_ID = "-1";
-    private String navigationTitles[] = {"Book Appointment", "Appointments", "logout"};
+    private String navigationTitles[] = {"Book Appointment", "Appointments", "Logout"};
     String headerName = "";
 
     @Bind(R.id.hospital_spinner)
@@ -128,6 +131,24 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                switch (position) {
+                    case 3:
+                        /**
+                         * Logout event
+                         */
+                        SharedPreferences sharedPreference = getSharedPreferences(getString(R.string.shared_pref_key), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreference.edit().clear();
+                        editor.apply();
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                }
+            }
+        });
     }
 
     /**

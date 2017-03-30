@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="8dp"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/item_name"
