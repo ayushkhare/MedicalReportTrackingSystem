@@ -10,6 +10,7 @@
     <color name="white_overlay_8x">#20FFFFFF</color>
     <color name="grey300">#E0E0E0</color>
     <color name="grey400">#BDBDBD</color>
+    <color name="grey400_opacity_50">#50BDBDBD</color>
     <color name="grey500">#9E9E9E</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -19,4 +20,5 @@
     <color name="greyBlue900">#263238</color>
     <color name="black_opacity_50">#50000000</color>
     <color name="black_opacity_80">#90000000</color>
+    <color name="greyBlue_100">#ECECEE</color>
 </resources>

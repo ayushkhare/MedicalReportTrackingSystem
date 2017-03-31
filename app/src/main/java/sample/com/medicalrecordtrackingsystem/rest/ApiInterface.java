@@ -10,6 +10,7 @@ import retrofit2.http.Query;
 import sample.com.medicalrecordtrackingsystem.models.Department;
 import sample.com.medicalrecordtrackingsystem.models.Doctor;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
+import sample.com.medicalrecordtrackingsystem.models.Slots;
 import sample.com.medicalrecordtrackingsystem.models.User;
 
 /**
@@ -37,5 +38,11 @@ public interface ApiInterface {
 
     @GET("patients/{id}")
     Call<User> getUserDetails(@Path("id") int id);
+
+    @GET("doctors/{id}/slots")
+    Call<List<Slots>> getSlots(@Path("id") int id);
+
+    @GET("doctors/{id}")
+    Call<Doctor> getDoctorFromId(@Path("id") int id);
 
 }

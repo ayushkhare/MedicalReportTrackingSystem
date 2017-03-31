@@ -1,5 +1,6 @@
 package sample.com.medicalrecordtrackingsystem;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import retrofit2.Response;
 import sample.com.medicalrecordtrackingsystem.models.Doctor;
 import sample.com.medicalrecordtrackingsystem.rest.ApiClient;
 import sample.com.medicalrecordtrackingsystem.rest.ApiInterface;
+import sample.com.medicalrecordtrackingsystem.utility.ItemClickSupport;
 
 /**
  * Created by ayush on 28/3/17
@@ -87,6 +90,15 @@ public class DoctorActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                Intent intent = new Intent(DoctorActivity.this, DoctorDetailsActivity.class);
+                intent.putExtra("id", doctorList.get(position).getId());
+                startActivity(intent);
+            }
+        });
     }
 
     private void setupSwipeToRefresh() {
