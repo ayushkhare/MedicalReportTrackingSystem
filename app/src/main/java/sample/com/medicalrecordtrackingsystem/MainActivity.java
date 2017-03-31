@@ -1,6 +1,8 @@
 package sample.com.medicalrecordtrackingsystem;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,14 +33,16 @@ import retrofit2.Response;
 import sample.com.medicalrecordtrackingsystem.adapter.DrawerAdapter;
 import sample.com.medicalrecordtrackingsystem.models.Department;
 import sample.com.medicalrecordtrackingsystem.models.Hospital;
+import sample.com.medicalrecordtrackingsystem.models.User;
 import sample.com.medicalrecordtrackingsystem.rest.ApiClient;
 import sample.com.medicalrecordtrackingsystem.rest.ApiInterface;
+import sample.com.medicalrecordtrackingsystem.utility.ItemClickSupport;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String DUMMY_ID = "-1";
-    private String navigationTitles[] = {"Book Appointment", "Appointments", "logout"};
-    String headerName = "Ayush Khare";
+    private String navigationTitles[] = {"Book Appointment", "Appointments", "Logout"};
+    String headerName = "";
 
     @Bind(R.id.hospital_spinner)
     SearchableSpinner hospitalSpinner;
@@ -68,21 +72,49 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Bundle bundle = getIntent().getExtras();
+        int userId = bundle.getInt("userId");
         getApiClient();
-        setupDrawer();
+        getUserDetails(userId);
         getHospitalsFromApi();
         getDepartmentsFromApi();
-        setButtonState();
+        proceedButton.setEnabled(false);
     }
 
     private void getApiClient() {
         apiService = ApiClient.getCient().create(ApiInterface.class);
     }
 
+    private void getUserDetails(int userId) {
+        Call<User> call= apiService.getUserDetails(userId);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response != null) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        User user = response.body();
+//                        headerName = user.getUsername();
+                        headerName = "Ayush Khare";
+                        setupDrawer();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setupDrawer() {
         setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.book_appointment));
         recyclerView.setHasFixedSize(true);
-        mAdapter = new DrawerAdapter(navigationTitles, headerName);
+        mAdapter = new DrawerAdapter(this, navigationTitles, headerName);
         recyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -101,6 +133,24 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         drawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                switch (position) {
+                    case 3:
+                        /**
+                         * Logout event
+                         */
+                        SharedPreferences sharedPreference = getSharedPreferences(getString(R.string.shared_pref_key), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreference.edit().clear();
+                        editor.apply();
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                }
+            }
+        });
     }
 
     /**

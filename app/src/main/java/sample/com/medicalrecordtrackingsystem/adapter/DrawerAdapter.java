@@ -1,12 +1,16 @@
 package sample.com.medicalrecordtrackingsystem.adapter;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.amulyakhare.textdrawable.TextDrawable;
+
 import sample.com.medicalrecordtrackingsystem.R;
 
 /**
@@ -16,10 +20,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private Context context;
     private String[] navigationTitles;
-    private String headerName;
+    private String headerName = "Ayush Khare";
 
-    public DrawerAdapter(String[] navigationTitles, String headerName) {
+    public DrawerAdapter(Context context, String[] navigationTitles, String headerName) {
+        this.context = context;
         this.navigationTitles = navigationTitles;
         this.headerName = headerName;
     }
@@ -42,6 +48,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
         if (holder.getItemViewType() == TYPE_ITEM) {
             holder.itemName.setText(navigationTitles[position - 1]);
         } else {
+            TextDrawable drawable = TextDrawable.builder().
+                    beginConfig()
+                    .textColor(ContextCompat.getColor(context, R.color.white))
+                    .bold()
+                    .endConfig()
+                    .buildRound("A", ContextCompat.getColor(context, R.color.colorAccent));
+
+
+            holder.profileImage.setImageDrawable(drawable);
             holder.profileName.setText(headerName);
         }
     }
@@ -61,7 +76,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView profileImage;
+        ImageView profileImage;
         TextView profileName;
         TextView itemName;
         View divider;
@@ -72,7 +87,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
                 itemName = (TextView) itemView.findViewById(R.id.item_name);
                 divider = itemView.findViewById(R.id.divider);
             } else {
-                profileImage = (CircleImageView) itemView.findViewById(R.id.profile_image);
+                profileImage = (ImageView) itemView.findViewById(R.id.profile_image);
                 profileName = (TextView) itemView.findViewById(R.id.profile_name);
             }
         }
