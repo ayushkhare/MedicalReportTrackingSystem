@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 if (response != null) {
                     if (response.isSuccessful() && response.body() != null) {
                         User user = response.body();
-                        headerName = user.getUsername();
+//                        headerName = user.getUsername();
+                        headerName = "Ayush Khare";
                         setupDrawer();
                     } else {
                         Toast.makeText(MainActivity.this, getString(R.string.api_error_message), Toast.LENGTH_SHORT).show();
@@ -111,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDrawer() {
         setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.book_appointment));
         recyclerView.setHasFixedSize(true);
-        mAdapter = new DrawerAdapter(navigationTitles, headerName);
+        mAdapter = new DrawerAdapter(this, navigationTitles, headerName);
         recyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
