@@ -40,7 +40,7 @@ import sample.com.medicalrecordtrackingsystem.utility.ItemClickSupport;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String DUMMY_ID = "-1";
+    private static final int DUMMY_ID = -1;
     private String navigationTitles[] = {"Book Appointment", "Appointments", "Logout"};
     String headerName = "";
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     private ApiInterface apiService;
-    private String selectedHospitalid;
+    private int selectedHospitalid;
     private String selectedDepartmentValue;
     RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtonState() {
-        if (DUMMY_ID.equals(selectedHospitalid) && getString(R.string.select_one).equals(selectedDepartmentValue)) {
+        if (DUMMY_ID == (selectedHospitalid) && getString(R.string.select_one).equals(selectedDepartmentValue)) {
             proceedButton.setEnabled(false);
         } else {
             proceedButton.setEnabled(true);
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.proceed_btn)
     public void onClickProceed() {
-        Intent intent = new Intent(MainActivity.this, DoctorDetailsActivity.class);
+        Intent intent = new Intent(MainActivity.this, DoctorActivity.class);
         intent.putExtra("hospital_id", selectedHospitalid);
         intent.putExtra("department_value", selectedDepartmentValue);
         startActivity(intent);

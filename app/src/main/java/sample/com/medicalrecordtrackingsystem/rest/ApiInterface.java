@@ -21,10 +21,13 @@ public interface ApiInterface {
     Call<List<Hospital>> getHospitals();
 
     @GET("doctors")
-    Call<List<Doctor>> getDoctors();
+    Call<List<Doctor>> getDoctors(@Query("hospitalId") int hospitalId, @Query("dept") String dept);
 
     @GET("doctors")
-    Call<List<Doctor>> getDoctorBasedOnHospital(@Query("hospitalId") String hospitalId);
+    Call<List<Doctor>> getDoctorsBasedOnHospital(@Query("hospitalId") int hospitalId);
+
+    @GET("doctors")
+    Call<List<Doctor>> getDoctorsBasedOnDepartment(@Query("dept") String dept);
 
     @GET("doctors/departments")
     Call<List<Department>> getDepartments();

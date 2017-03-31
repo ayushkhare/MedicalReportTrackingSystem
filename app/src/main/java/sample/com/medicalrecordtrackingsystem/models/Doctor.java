@@ -11,7 +11,7 @@ public class Doctor {
     private String dept;
     private String details;
     private String hospitalId;
-    private String id;
+    private int id;
     private String name;
     private String phone;
 
@@ -47,11 +47,11 @@ public class Doctor {
         this.hospitalId = hospitalId;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
