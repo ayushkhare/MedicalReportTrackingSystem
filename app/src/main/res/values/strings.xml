@@ -22,4 +22,17 @@
     <string name="user_id">User id</string>
     <string name="book_appointment">Book Appointment</string>
     <string name="action_search">Search</string>
+    <string name="book_now">Book Now</string>
+    <string name="years_of_exp">Exp:</string>
+    <string-array name="time_slot_array">
+        <item>9:00 - 9:20</item>
+        <item>9:20 - 9:40</item>
+        <item>9:40 - 10:00</item>
+        <item>10:00 - 10:20</item>
+        <item>10:20 - 10:40</item>
+        <item>10:40 - 11:00</item>
+        <item>11:00 - 11:20</item>
+        <item>11:20 - 11:40</item>
+        <item>11:40 - 12:00</item>
+    </string-array>
 </resources>

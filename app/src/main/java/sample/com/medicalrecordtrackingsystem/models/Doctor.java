@@ -13,7 +13,8 @@ public class Doctor {
     private String hospitalId;
     private int id;
     private String name;
-    private String phone;
+    private int phone;
+    private int yearsOfExp;
 
     public List<Doctor> getDoctorList() {
         return doctorList;
@@ -63,22 +64,20 @@ public class Doctor {
         this.name = name;
     }
 
-    public String getPhone() {
+    public int getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(int phone) {
         this.phone = phone;
     }
 
-    public String getYearsOfExp() {
+    public int getYearsOfExp() {
         return yearsOfExp;
     }
 
-    public void setYearsOfExp(String yearsOfExp) {
+    public void setYearsOfExp(int yearsOfExp) {
         this.yearsOfExp = yearsOfExp;
     }
-
-    private String yearsOfExp;
 
 }
