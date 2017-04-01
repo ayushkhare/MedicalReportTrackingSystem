@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,90 +19,90 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_collapseMode="parallax">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/image"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:scaleType="centerCrop"
-                        android:background="@color/grey300"
                         android:layout_marginStart="48dp"
-                        android:layout_marginTop="16dp"/>
+                        android:layout_marginTop="16dp"
+                        android:background="@color/grey300"
+                        android:scaleType="centerCrop" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp">
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/white"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="@color/white"
-                            tools:text="Ayush Khare"/>
+                            tools:text="Ayush Khare" />
 
                         <TextView
                             android:id="@+id/dept"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textColor="@color/white"
                             android:layout_marginTop="8dp"
-                            tools:text="Physician"/>
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            tools:text="Physician" />
 
                         <TextView
                             android:id="@+id/details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/white"
                             android:layout_marginTop="8dp"
-                            tools:text="I am a doctor practicing in Singapore"/>
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            tools:text="I am a doctor practicing in Singapore" />
 
                         <TextView
                             android:id="@+id/phone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/white"
                             android:layout_marginTop="8dp"
-                            tools:text="82305261"/>
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            tools:text="82305261" />
 
                         <LinearLayout
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp">
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textSize="12sp"
                                 android:text="@string/years_of_exp"
                                 android:textColor="@color/white"
-                                tools:text="Years of Exp:"/>
+                                android:textSize="12sp"
+                                tools:text="Years of Exp:" />
 
                             <TextView
                                 android:id="@+id/exp"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textSize="14sp"
                                 android:textColor="@color/white"
-                                tools:text="15 yrs"/>
+                                android:textSize="14sp"
+                                tools:text="15 yrs" />
 
                         </LinearLayout>
 
@@ -125,12 +125,14 @@
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -142,20 +144,19 @@
         android:layout_gravity="bottom">
 
         <Button
-            android:id="@+id/buy_deal_button"
+            android:id="@+id/book_now_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="bottom"
             android:background="@drawable/proceed_button_background"
+            android:gravity="center"
             android:paddingBottom="14dp"
             android:paddingTop="14dp"
-            android:textColor="@color/white"
             android:text="@string/book_now"
-            android:textSize="16sp"
             android:textAllCaps="true"
-            app:layout_behavior="sample.com.medicalrecordtrackingsystem.utility.QuickReturnFooterBehaviour"
-            />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_behavior="sample.com.medicalrecordtrackingsystem.utility.QuickReturnFooterBehaviour" />
 
     </LinearLayout>
 

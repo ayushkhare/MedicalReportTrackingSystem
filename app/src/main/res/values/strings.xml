@@ -24,6 +24,9 @@
     <string name="action_search">Search</string>
     <string name="book_now">Book Now</string>
     <string name="years_of_exp">Exp:</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+    <string name="appointments">Appointments</string>
     <string-array name="time_slot_array">
         <item>9:00 - 9:20</item>
         <item>9:20 - 9:40</item>

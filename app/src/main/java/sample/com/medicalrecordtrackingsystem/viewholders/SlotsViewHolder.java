@@ -1,5 +1,6 @@
 package sample.com.medicalrecordtrackingsystem.viewholders;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -38,7 +39,7 @@ public class SlotsViewHolder extends BaseViewHolder<Items> {
         final StaggeredGridLayoutManager.LayoutParams params = new StaggeredGridLayoutManager.LayoutParams(itemView.getLayoutParams());
         params.setFullSpan(true);
         itemView.setLayoutParams(params);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(parent.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(parent.getContext(), 1, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setNestedScrollingEnabled(false);
         mAdapter = new SlotsAdapter(parent.getContext(), new Slots());
