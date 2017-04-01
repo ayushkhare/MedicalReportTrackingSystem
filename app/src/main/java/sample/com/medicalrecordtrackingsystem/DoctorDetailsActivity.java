@@ -1,5 +1,6 @@
 package sample.com.medicalrecordtrackingsystem;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -203,5 +205,11 @@ public class DoctorDetailsActivity extends AppCompatActivity {
         mAdapter = new GenericAdapter(DoctorDetailsActivity.this, itemsList);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setAdapter(mAdapter);
+    }
+
+    @OnClick(R.id.book_now_button)
+    public void onClickBook() {
+        Intent intent = new Intent(DoctorDetailsActivity.this, AppointmentActivity.class);
+        startActivity(intent);
     }
 }
